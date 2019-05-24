@@ -64,11 +64,10 @@ exports.getUser = function(req, res) {
 
             if (user_token._id != user._id && !user.is_active) {
                 res.json({ success: false, msg: 'El usuario no está activo.' });
+            } else {
+                res.json(user);
             }
-            res.json(user);
         });
-
-
     } else {
         return res.status(403).send({ success: false, msg: 'No autorizado.' });
     }
@@ -90,6 +89,7 @@ getToken = function(headers) {
 verifyToken = function(token) {
     if (token) {
         var user;
+
         jwt.verify(token, config.secret, (err, authData) => {
             if (err) throw err;
             user = authData;

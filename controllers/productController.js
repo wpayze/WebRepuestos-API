@@ -1,6 +1,6 @@
 var Product = require("../models/product");
 
-exports.createProduct = function (req, res) {
+exports.createProduct = function(req, res) {
 
     var token = getToken(req.headers);
 
@@ -19,7 +19,7 @@ exports.createProduct = function (req, res) {
             is_active: req.body.is_active
         });
 
-        newProduct.save(function (err) {
+        newProduct.save(function(err) {
             if (err) {
                 return res.json({ success: false, msg: 'Error guardando el producto.' });
             }
@@ -30,13 +30,13 @@ exports.createProduct = function (req, res) {
     }
 }
 
-exports.getProducts = function (req, res) {
+exports.getProducts = function(req, res) {
 
     var token = getToken(req.headers);
     var user = verifyToken(token);
 
     if (token) {
-        Product.find({ 'user_id': user._id }, function (err, products) {
+        Product.find({ 'user_id': user._id }, function(err, products) {
             if (err) throw err;
             res.json(products);
         });
@@ -46,20 +46,35 @@ exports.getProducts = function (req, res) {
 
 }
 
-exports.getProduct = function (req, res) {
+exports.getProductsById = function(req, res) {
 
     var token = getToken(req.headers);
 
     if (token) {
-        
+        Product.find({ 'user_id': req.params._id }, function(err, products) {
+            if (err) throw err;
+            res.json(products);
+        });
+    } else {
+        return res.status(403).send({ success: false, msg: 'No autorizado.' });
+    }
+
+}
+
+exports.getProduct = function(req, res) {
+
+    var token = getToken(req.headers);
+
+    if (token) {
+
         var user = verifyToken(token);
 
-        Product.findById(req.params._id, function (err, product) {
+        Product.findById(req.params._id, function(err, product) {
             if (err) throw err;
 
-            if (user._id != product.user_id && !product.is_active){
-                res.json({success: false, msg: 'El producto no está activo.'});
-            }else{
+            if (user._id != product.user_id && !product.is_active) {
+                res.json({ success: false, msg: 'El producto no está activo.' });
+            } else {
                 res.json(product);
             }
         });
