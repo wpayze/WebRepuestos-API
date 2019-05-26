@@ -20,9 +20,14 @@ var ProductSchema = new Schema({
         type: Number,
         required: true
     },
-    user_id: {
+    seller_id: {
         type: Schema.Types.ObjectId,
         ref: 'User',
+        required: true
+    },
+    category_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'Category',
         required: true
     },
     img: {
@@ -32,7 +37,7 @@ var ProductSchema = new Schema({
         type: Number,
         required: true
     }
-    
-}, {timestamps: true});
+
+}, { timestamps: true });
 
 module.exports = mongoose.model('Product', ProductSchema);
