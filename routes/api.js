@@ -8,6 +8,7 @@ var router = express.Router();
 var authController = require('../controllers/authController');
 var productController = require('../controllers/productController');
 var categoryController = require('../controllers/categoryController');
+var itemListController = require('../controllers/itemListController');
 
 router.get('/user/:_id', authController.getUser);
 router.post('/register', authController.register);
@@ -18,13 +19,11 @@ router.get('/product',
     passport.authenticate('jwt', { session: false }),
     productController.getProducts);
 router.post('/product/search',
-    passport.authenticate('jwt', { session: false }),
     productController.fuzzySearch);
 router.get('/products/:_id',
     passport.authenticate('jwt', { session: false }),
     productController.getProductsById);
 router.get('/products_category/:category_id',
-    passport.authenticate('jwt', { session: false }),
     productController.getProductsByCategory);
 router.get('/product/:_id',
     passport.authenticate('jwt', { session: false }),
@@ -39,5 +38,13 @@ router.get('/category',
 router.post('/category',
     passport.authenticate('jwt', { session: false }),
     categoryController.createCategory);
+
+//Items List
+router.get('/getList',
+    passport.authenticate('jwt', { session: false }),
+    itemListController.getList);
+router.post('/addItemList',
+    passport.authenticate('jwt', { session: false }),
+    itemListController.addItemList);
 
 module.exports = router;

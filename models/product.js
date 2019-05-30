@@ -36,6 +36,10 @@ var ProductSchema = new Schema({
     is_active: {
         type: Number,
         required: true
+    },
+    quantity: {
+        type: Number,
+        required: true
     }
 
 }, { timestamps: true });

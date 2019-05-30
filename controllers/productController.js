@@ -17,7 +17,8 @@ exports.createProduct = function(req, res) {
             seller_id: user._id,
             img: req.body.img,
             is_active: req.body.is_active,
-            category_id: req.body.category_id
+            category_id: req.body.category_id,
+            quantity: req.body.quantity
         });
 
         newProduct.save(function(err) {
@@ -26,6 +27,7 @@ exports.createProduct = function(req, res) {
             }
             return res.json({ success: true, msg: 'Producto guardado correctamente.' });
         });
+
     } else {
         res.status(403).send({ success: false, msg: 'No autorizado.' });
     }
@@ -64,17 +66,10 @@ exports.getProductsById = function(req, res) {
 
 exports.getProductsByCategory = function(req, res) {
 
-    var token = getToken(req.headers);
-
-    if (token) {
-        Product.find({ 'category_id': req.params.category_id }, function(err, products) {
-            if (err) throw err;
-            res.json(products);
-        });
-    } else {
-        return res.status(403).send({ success: false, msg: 'No autorizado.' });
-    }
-
+    Product.find({ 'category_id': req.params.category_id }, function(err, products) {
+        if (err) throw err;
+        res.json(products);
+    });
 }
 
 exports.getProduct = function(req, res) {
@@ -96,8 +91,6 @@ exports.getProduct = function(req, res) {
             } else {
                 res.json({ success: false, msg: 'El producto no existe.' });
             }
-
-
         });
     }
 
