@@ -33,6 +33,27 @@ exports.addItemList = function(req, res) {
     }
 }
 
+exports.removeItemList = function(req, res) {
+
+    var token = getToken(req.headers);
+
+    if (token) {
+
+        var user = verifyToken(token);
+
+        ItemList.remove({ 'user_id': user._id, 'product_id': req.body.product_id }, function(err) {
+            if (err) {
+                throw err;
+            } else {
+                return res.json({ success: true, msg: 'Repuesto eliminado de la lista.' });
+            }
+
+        });
+    } else {
+        res.status(403).send({ success: false, msg: 'No autorizado.' });
+    }
+}
+
 exports.getList = function(req, res) {
 
     var token = getToken(req.headers);

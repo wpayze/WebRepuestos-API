@@ -46,5 +46,8 @@ router.get('/getList',
 router.post('/addItemList',
     passport.authenticate('jwt', { session: false }),
     itemListController.addItemList);
+router.post('/removeItemList',
+    passport.authenticate('jwt', { session: false }),
+    itemListController.removeItemList);
 
 module.exports = router;
