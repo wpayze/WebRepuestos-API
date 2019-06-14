@@ -1,3 +1,12 @@
+var formidable = require('formidable');
+const paypal = require('paypal-rest-sdk');
+
+paypal.configure({
+    'mode': 'sandbox', //sandbox or live
+    'client_id': 'AfMLaemTeltPx-NMSCpzxIe9HusMBnhw0ZWQruR-pGybiXYXcKLPuM5tvefUlU7wZK-5FlkaB4tD1X6Y',
+    'client_secret': 'EHeIYygzNrarFOqwsfawCHPtgnYRgrliNrRAk96UMJ7gADXwB4ZeIKBxdGobfXQpclzE0bm8feoYkAAn'
+});
+
 var Product = require("../models/product");
 
 exports.createProduct = function(req, res) {
@@ -39,7 +48,7 @@ exports.getProducts = function(req, res) {
     var user = verifyToken(token);
 
     if (token) {
-        Product.find({ 'seller_id': user._id }, function(err, products) {
+        Product.find(function(err, products) {
             if (err) throw err;
             res.json(products);
         });
@@ -116,3 +125,62 @@ exports.fuzzySearch = function(req, res) {
 function escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
+
+exports.uploadImage = function (req, res) {
+    var form = new formidable.IncomingForm();
+
+    form.parse(req);
+
+    form.on('fileBegin', function (name, file){
+        file.path = __dirname + "/../public/images/" + file.name;
+    });
+
+    form.on('file', function (name, file){
+        res.json({
+            success: true,
+            url: file.name
+        })
+    });
+}
+
+exports.pay = function (req, res) {
+    const create_payment_json = {
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        "redirect_urls": {
+            "return_url": "http://localhost:8080/#/success",
+            "cancel_url": "http://localhost:8080/"
+        },
+        "transactions": [{
+            "item_list": {
+                "items": [{
+                    "name": "Repuestos REON",
+                    "sku": "001",
+                    "price": req.body.amount,
+                    "currency": "USD",
+                    "quantity": "1"
+                }]
+            },
+            "amount": {
+                "currency": "USD",
+                "total": req.body.amount
+            },
+            "description": "Repuestos comprados en REON."
+        }]
+    };
+
+    paypal.payment.create(create_payment_json, function (error, payment) {
+      if (error) {
+          throw error;
+      } else {
+
+            for(let i = 0;i < payment.links.length;i++){
+                if(payment.links[i].rel === 'approval_url'){
+                res.redirect(payment.links[i].href);
+                }
+            }
+      }
+    });
+}

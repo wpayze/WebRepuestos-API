@@ -94,3 +94,24 @@ exports.getList = function(req, res) {
         res.status(403).send({ success: false, msg: 'No autorizado.' });
     }
 }
+
+exports.clearItemList = function(req, res) {
+
+    var token = getToken(req.headers);
+
+    if (token) {
+
+        var user = verifyToken(token);
+
+        ItemList.remove({ 'user_id': user._id }, function(err) {
+            if (err) {
+                throw err;
+            } else {
+                return res.json({ success: true, msg: 'Lista vaciada.' });
+            }
+
+        });
+    } else {
+        res.status(403).send({ success: false, msg: 'No autorizado.' });
+    }
+}

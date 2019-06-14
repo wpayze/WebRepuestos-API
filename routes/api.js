@@ -49,5 +49,14 @@ router.post('/addItemList',
 router.post('/removeItemList',
     passport.authenticate('jwt', { session: false }),
     itemListController.removeItemList);
+router.get('/clearItemList',
+    passport.authenticate('jwt', { session: false }),
+    itemListController.clearItemList);
+
+router.post('/uploadImage',
+    passport.authenticate('jwt', { session: false }),
+    productController.uploadImage);
+router.post('/pay',
+    productController.pay);
 
 module.exports = router;

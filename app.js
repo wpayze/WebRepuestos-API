@@ -7,9 +7,6 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var config = require('./config/database');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
 var api = require('./routes/api');
 
 var app = express();
