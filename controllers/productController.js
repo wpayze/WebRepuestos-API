@@ -150,7 +150,7 @@ exports.pay = function (req, res) {
             "payment_method": "paypal"
         },
         "redirect_urls": {
-            "return_url": "http://localhost:8080/#/success",
+            "return_url": "http://localhost:8080/#/success?order=140",
             "cancel_url": "http://localhost:8080/"
         },
         "transactions": [{

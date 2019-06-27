@@ -9,6 +9,7 @@ var authController = require('../controllers/authController');
 var productController = require('../controllers/productController');
 var categoryController = require('../controllers/categoryController');
 var itemListController = require('../controllers/itemListController');
+var commentController = require('../controllers/commentController');
 
 router.get('/user/:_id', authController.getUser);
 router.post('/register', authController.register);
@@ -52,6 +53,14 @@ router.post('/removeItemList',
 router.get('/clearItemList',
     passport.authenticate('jwt', { session: false }),
     itemListController.clearItemList);
+
+//Comentarios
+router.post('/comment/get',
+    passport.authenticate('jwt', { session: false }),
+    commentController.getComments);
+router.post('/comment',
+    passport.authenticate('jwt', { session: false }),
+    commentController.addComment);
 
 router.post('/uploadImage',
     passport.authenticate('jwt', { session: false }),
