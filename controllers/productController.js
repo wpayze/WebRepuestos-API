@@ -32,7 +32,7 @@ exports.createProduct = function(req, res) {
 
         newProduct.save(function(err) {
             if (err) {
-                return res.json({ success: false, msg: 'Error guardando el producto.' });
+                return res.json({ success: false, msg: 'Error guardando el producto. ' + err });
             }
             return res.json({ success: true, msg: 'Producto guardado correctamente.' });
         });
