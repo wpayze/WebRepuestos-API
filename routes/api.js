@@ -22,16 +22,20 @@ router.get('/product',
 router.post('/product/search',
     productController.fuzzySearch);
 router.get('/products/:_id',
-    passport.authenticate('jwt', { session: false }),
     productController.getProductsById);
 router.get('/products_category/:category_id',
     productController.getProductsByCategory);
 router.get('/product/:_id',
-    passport.authenticate('jwt', { session: false }),
     productController.getProduct);
 router.post('/product',
     passport.authenticate('jwt', { session: false }),
     productController.createProduct);
+router.post('/product/update/:_id',
+    passport.authenticate('jwt', { session: false }),
+    productController.updateProduct);
+router.delete('/product/:_id',
+    passport.authenticate('jwt', { session: false }),
+    productController.deleteProduct);
 
 //Categories
 router.get('/category',
@@ -56,7 +60,6 @@ router.get('/clearItemList',
 
 //Comentarios
 router.post('/comment/get',
-    passport.authenticate('jwt', { session: false }),
     commentController.getComments);
 router.post('/comment',
     passport.authenticate('jwt', { session: false }),

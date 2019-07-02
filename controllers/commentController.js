@@ -34,10 +34,6 @@ exports.addComment = function(req, res) {
 
 exports.getComments = function(req, res) {
 
-    var token = getToken(req.headers);
-
-    if (token) {
-
         Comment.find({ 'product_id': req.body.product_id }, function(err, comments) {
             
             if (err) throw err;
@@ -45,8 +41,4 @@ exports.getComments = function(req, res) {
             res.json(comments);
 
         });
-
-    } else {
-        res.status(403).send({ success: false, msg: 'No autorizado.' });
-    }
 }

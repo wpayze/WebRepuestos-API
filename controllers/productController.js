@@ -42,10 +42,28 @@ exports.createProduct = function(req, res) {
     }
 }
 
+exports.updateProduct = function(req, res) {
+    var token = getToken(req.headers);
+    if (token) {
+
+        Product.findByIdAndUpdate(
+            req.params._id,
+            req.body,
+            {new: true},
+            (err, product) => {
+                if (err) return res.status(500).send(err);
+                return res.json({ product, success: true, msg: 'Producto actualizado correctamente.' });
+            }
+        )
+
+    } else {
+        res.status(403).send({ success: false, msg: 'No autorizado.' });
+    }
+}
+
 exports.getProducts = function(req, res) {
 
     var token = getToken(req.headers);
-    var user = verifyToken(token);
 
     if (token) {
         Product.find(function(err, products) {
@@ -60,16 +78,10 @@ exports.getProducts = function(req, res) {
 
 exports.getProductsById = function(req, res) {
 
-    var token = getToken(req.headers);
-
-    if (token) {
-        Product.find({ 'seller_id': req.params._id }, function(err, products) {
-            if (err) throw err;
-            res.json(products);
-        });
-    } else {
-        return res.status(403).send({ success: false, msg: 'No autorizado.' });
-    }
+    Product.find({ 'seller_id': req.params._id }, function(err, products) {
+        if (err) throw err;
+        res.json(products);
+    });
 
 }
 
@@ -83,26 +95,32 @@ exports.getProductsByCategory = function(req, res) {
 
 exports.getProduct = function(req, res) {
 
+    Product.findById(req.params._id, function(err, product) {
+        if (err) throw err;
+        if (product) {
+            /*if (user._id != product.seller_id && !product.is_active) {
+                res.json({ success: false, msg: 'El producto no está activo.' });
+            } else {*/
+                res.json(product);
+            //}
+        } else {
+            res.json({ success: false, msg: 'El producto no existe.' });
+        }
+    });
+}
+
+exports.deleteProduct = function(req, res) {
+
     var token = getToken(req.headers);
 
     if (token) {
-
-        var user = verifyToken(token);
-
-        Product.findById(req.params._id, function(err, product) {
-            if (err) throw err;
-            if (product) {
-                if (user._id != product.seller_id && !product.is_active) {
-                    res.json({ success: false, msg: 'El producto no está activo.' });
-                } else {
-                    res.json(product);
-                }
-            } else {
-                res.json({ success: false, msg: 'El producto no existe.' });
-            }
+        Product.findByIdAndRemove(req.params._id, (err, product) => {
+            if (err) return res.status(500).send(err);
+            return res.json({ product, success: true, msg: 'Producto eliminado correctamente.' });
         });
+    } else {
+        return res.status(403).send({ success: false, msg: 'No autorizado.' });
     }
-
 }
 
 exports.fuzzySearch = function(req, res) {

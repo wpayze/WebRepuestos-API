@@ -53,24 +53,16 @@ exports.login = function(req, res) {
 }
 
 exports.getUser = function(req, res) {
-    var token = getToken(req.headers);
 
-    if (token) {
+    User.findById(req.params._id, function(err, user) {
+        if (err) throw err;
 
-        var user_token = verifyToken(token);
-
-        User.findById(req.params._id, function(err, user) {
-            if (err) throw err;
-
-            if (user_token._id != user._id && !user.is_active) {
-                res.json({ success: false, msg: 'El usuario no está activo.' });
-            } else {
-                res.json(user);
-            }
-        });
-    } else {
-        return res.status(403).send({ success: false, msg: 'No autorizado.' });
-    }
+        /*if (user_token._id != user._id && !user.is_active) {
+            res.json({ success: false, msg: 'El usuario no está activo.' });
+        } else {*/
+            res.json(user);
+        //}
+    });
 }
 
 getToken = function(headers) {

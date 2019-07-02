@@ -6,6 +6,7 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var config = require('./config/database');
+//var history = require('connect-history-api-fallback');
 
 var api = require('./routes/api');
 
@@ -17,7 +18,7 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Credentials", "true");
     res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization");
-    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT, DELETE");
 
     next();
 });
@@ -32,11 +33,19 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-//app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
+
+//These 2 lines make sure that vue and express app are coming from the same server. 
+/*app.use('/static', express.static(path.join(__dirname,"/public/dist/"))); 
+*/
+app.get('/', function(req,res) {
+   res.sendFile('index.html', { root: path.join(__dirname, 'public/dist/') });
+});
+
 
 app.get('/', function(req,res) {
     res.send('NodeJS - Express API (WILFREDO PAIZ REON)');
- });
+});
 app.use('/api', api);
 
 // catch 404 and forward to error handler
