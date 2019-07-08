@@ -10,6 +10,7 @@ var productController = require('../controllers/productController');
 var categoryController = require('../controllers/categoryController');
 var itemListController = require('../controllers/itemListController');
 var commentController = require('../controllers/commentController');
+var saleController = require('../controllers/saleController');
 
 router.get('/user/:_id', authController.getUser);
 router.post('/register', authController.register);
@@ -17,7 +18,6 @@ router.post('/login', authController.login);
 
 //Products
 router.get('/product',
-    passport.authenticate('jwt', { session: false }),
     productController.getProducts);
 router.post('/product/search',
     productController.fuzzySearch);
@@ -70,5 +70,19 @@ router.post('/uploadImage',
     productController.uploadImage);
 router.post('/pay',
     productController.pay);
+
+//Sales
+router.post('/sale',
+    passport.authenticate('jwt', { session: false }),
+    saleController.addSale);
+router.get('/sale/activate/:_id',
+    passport.authenticate('jwt', { session: false }),
+    saleController.activateSale);
+router.get('/sale',
+    passport.authenticate('jwt', { session: false }),
+    saleController.getSales);
+router.get('/sale/:_id',
+    passport.authenticate('jwt', { session: false }),
+    saleController.activateSale);
 
 module.exports = router;

@@ -42,20 +42,44 @@ exports.createProduct = function(req, res) {
     }
 }
 
-exports.updateProduct = function(req, res) {
+exports.updateProduct = (req, res) => {
+    
     var token = getToken(req.headers);
+    
     if (token) {
 
-        Product.findByIdAndUpdate(
-            req.params._id,
-            req.body,
-            {new: true},
-            (err, product) => {
-                if (err) return res.status(500).send(err);
-                return res.json({ product, success: true, msg: 'Producto actualizado correctamente.' });
-            }
-        )
+        Product.findById(req.params._id, async (err,product) =>{
+            if (err) throw err;
 
+            /**
+             *  {
+                    "name": "Cremayera de Direccion 100",
+                    "location": "San Pedro Sula",
+                    "description": "Para Volkswagen Tiguan",
+                    "price": 27000,
+                    "img": ""
+                }
+             */
+
+            product.name = req.body.name ? req.body.name : product.name;
+            product.location = req.body.location ? req.body.location : product.location;
+            product.description = req.body.description ? req.body.description : product.description;
+            product.price = req.body.price ? req.body.price : product.price;
+            product.img = req.body.img ? req.body.img : product.img;
+            product.category_id = req.body.category_id ? req.body.category_id : product.category_id;
+            product.quantity = req.body.quantity ? req.body.quantity : product.quantity;
+
+            Product.findByIdAndUpdate(
+                req.params._id,
+                product,
+                {new: true},
+                (err, product) => {
+                    if (err) return res.status(500).send(err);
+                    return res.json({ product, success: true, msg: 'Producto actualizado correctamente.' });
+                }
+            );
+        });
+        
     } else {
         res.status(403).send({ success: false, msg: 'No autorizado.' });
     }
@@ -63,16 +87,10 @@ exports.updateProduct = function(req, res) {
 
 exports.getProducts = function(req, res) {
 
-    var token = getToken(req.headers);
-
-    if (token) {
-        Product.find(function(err, products) {
-            if (err) throw err;
-            res.json(products);
-        });
-    } else {
-        return res.status(403).send({ success: false, msg: 'No autorizado.' });
-    }
+    Product.find(function(err, products) {
+        if (err) throw err;
+        res.json(products);
+    });
 
 }
 
@@ -162,13 +180,14 @@ exports.uploadImage = function (req, res) {
 }
 
 exports.pay = function (req, res) {
+    console.log(req.body);
     const create_payment_json = {
         "intent": "sale",
         "payer": {
             "payment_method": "paypal"
         },
         "redirect_urls": {
-            "return_url": "http://localhost:8080/#/success?order=140",
+            "return_url": "http://localhost:8080/#/success?order="+req.body.sale_id,
             "cancel_url": "http://localhost:8080/"
         },
         "transactions": [{

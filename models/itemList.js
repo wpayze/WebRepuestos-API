@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 var ItemListSchema = new Schema({
     user_id: {
         type: Schema.Types.ObjectId,
-        ref: 'Product',
+        ref: 'User',
         required: true
     },
     product_id: {

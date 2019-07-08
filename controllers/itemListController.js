@@ -1,5 +1,8 @@
+const _ = require("lodash");
+
 var ItemList = require("../models/itemList");
 var Product = require("../models/product");
+
 
 exports.addItemList = function(req, res) {
 
@@ -80,13 +83,25 @@ exports.getList = function(req, res) {
                     }
                 }, function(err, products) {
                     if (err) throw err;
-
+                     
                     if (products.length > 0) {
-                        return res.json(products);
+                        
+                        /*var grouped = _.groupBy(products, function(product) {
+                            return product.seller_id;
+                        });*/
+                        var result = _.chain(products).groupBy("seller_id._id").map(function(v, i) {
+                            return {
+                                seller: v[0].seller_id,
+                                products: v
+                            }
+                        }).value();
+
+                        res.json(result);
+
                     } else {
                         return res.json({ success: true, msg: 'No tiene productos en su lista.' });
                     }
-                });
+                }).populate('seller_id');
 
             }
         });

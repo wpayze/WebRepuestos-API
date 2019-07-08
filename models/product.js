@@ -13,8 +13,7 @@ var ProductSchema = new Schema({
         type: String
     },
     description: {
-        type: String,
-        required: true
+        type: String
     },
     price: {
         type: Number,
