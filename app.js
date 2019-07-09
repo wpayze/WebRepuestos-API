@@ -35,14 +35,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//These 2 lines make sure that vue and express app are coming from the same server. 
-/*app.use('/static', express.static(path.join(__dirname,"/public/dist/"))); 
-*/
-app.get('/', function(req,res) {
-   res.sendFile('index.html', { root: path.join(__dirname, 'public/dist/') });
-});
-
-
 app.get('/', function(req,res) {
     res.send('NodeJS - Express API (WILFREDO PAIZ REON)');
 });

@@ -69,29 +69,27 @@ exports.updateProduct = (req, res) => {
             product.category_id = req.body.category_id ? req.body.category_id : product.category_id;
             product.quantity = req.body.quantity ? req.body.quantity : product.quantity;
 
-            Product.findByIdAndUpdate(
-                req.params._id,
+        Product.findByIdAndUpdate(
+            req.params._id,
                 product,
-                {new: true},
-                (err, product) => {
-                    if (err) return res.status(500).send(err);
-                    return res.json({ product, success: true, msg: 'Producto actualizado correctamente.' });
-                }
+            {new: true},
+            (err, product) => {
+                if (err) return res.status(500).send(err);
+                return res.json({ product, success: true, msg: 'Producto actualizado correctamente.' });
+            }
             );
         });
-        
+
     } else {
         res.status(403).send({ success: false, msg: 'No autorizado.' });
     }
 }
 
 exports.getProducts = function(req, res) {
-
-    Product.find(function(err, products) {
-        if (err) throw err;
-        res.json(products);
-    });
-
+        Product.find(function(err, products) {
+            if (err) throw err;
+            res.json(products);
+        });
 }
 
 exports.getProductsById = function(req, res) {
@@ -124,6 +122,13 @@ exports.getProduct = function(req, res) {
         } else {
             res.json({ success: false, msg: 'El producto no existe.' });
         }
+    });
+}
+
+exports.reduceQty = function(req, res) {
+    Product.findByIdAndUpdate(req.params._id, {$inc: {quantity: -req.params.qty}}, function(err, product) {
+        if (err) throw err;
+        res.json(product);
     });
 }
 
@@ -180,7 +185,6 @@ exports.uploadImage = function (req, res) {
 }
 
 exports.pay = function (req, res) {
-    console.log(req.body);
     const create_payment_json = {
         "intent": "sale",
         "payer": {

@@ -73,7 +73,6 @@ exports.getSale = function(req, res) {
     if (token) {
 
     var user = verifyToken(token);
-        res.json(user);
         Sale.findById( req.params._id , function(err, sale) {
             if (err) throw err;
             res.json(sale);

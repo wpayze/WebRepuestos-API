@@ -27,6 +27,8 @@ router.get('/products_category/:category_id',
     productController.getProductsByCategory);
 router.get('/product/:_id',
     productController.getProduct);
+router.get('/product/:_id/:qty',
+    productController.reduceQty);
 router.post('/product',
     passport.authenticate('jwt', { session: false }),
     productController.createProduct);
@@ -83,6 +85,6 @@ router.get('/sale',
     saleController.getSales);
 router.get('/sale/:_id',
     passport.authenticate('jwt', { session: false }),
-    saleController.activateSale);
+    saleController.getSale);
 
 module.exports = router;

@@ -39,6 +39,10 @@ var ProductSchema = new Schema({
     quantity: {
         type: Number,
         required: true
+    },
+    qty_sale: {
+        type: Number,
+        default: 1
     }
 
 }, { timestamps: true });
