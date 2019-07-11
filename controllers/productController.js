@@ -172,14 +172,24 @@ exports.uploadImage = function (req, res) {
 
     form.parse(req);
 
+    var rand = function() {
+        return Math.random().toString(36).substr(2); // remove `0.`
+    };
+    
+    var token = function() {
+        return rand() + rand(); // to make it longer
+    };
+    
+    let nombr = token();
+
     form.on('fileBegin', function (name, file){
-        file.path = __dirname + "/../public/images/" + file.name;
+        file.path = __dirname + "/../public/images/" + nombr + file.name;
     });
 
     form.on('file', function (name, file){
         res.json({
             success: true,
-            url: file.name
+            url: nombr + file.name
         })
     });
 }
@@ -214,7 +224,9 @@ exports.pay = function (req, res) {
 
     paypal.payment.create(create_payment_json, function (error, payment) {
       if (error) {
+        console.log(error);
           throw error;
+          
       } else {
 
             for(let i = 0;i < payment.links.length;i++){

@@ -65,6 +65,64 @@ exports.getUser = function(req, res) {
     });
 }
 
+exports.addRating = function(req, res) {
+
+    User.findById(req.params._id, function(err, user) {
+        if (err) throw err;
+
+        if (user.type != 2){
+            res.send("error");
+        } else {
+            let newRating = 0;
+
+            if (user.rating == 0){
+                newRating = req.params.rating;
+            } else {
+                newRating = (user.rating + parseFloat(req.params.rating))/2;
+            }
+
+            console.log(user.rating, "user rating");
+            console.log(req.params.rating, "params rating");
+            console.log(newRating);
+            
+            user.update({rating: newRating}, (err, rating) => {
+                if (err) console.log(err);
+                res.json(rating);
+            });
+        }
+    });
+}
+
+exports.addRated = function(req, res) {
+
+    User.findById(req.params._id, function(err, user) {
+        if (err) throw err;
+
+        if (user.type != 2){
+            res.send("error");
+        } else {
+
+            let repetido = false;
+            user.rated.forEach(user_id => {
+                if (user_id == req.params.user_id){
+                    repetido = true;
+                }
+            });
+
+            if (!repetido){
+                user.rated.push(req.params.user_id);
+                user.update(user, (err, rating) => {
+                    if (err) console.log(err);
+                    res.json({sucesss: true});
+                });
+            }else{
+                res.json({success: false, msg: "ya voto ese usuario", });
+            }
+            
+        }
+    });
+}
+
 getToken = function(headers) {
     if (headers && headers.authorization) {
         var parted = headers.authorization.split(' ');

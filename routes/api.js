@@ -11,10 +11,19 @@ var categoryController = require('../controllers/categoryController');
 var itemListController = require('../controllers/itemListController');
 var commentController = require('../controllers/commentController');
 var saleController = require('../controllers/saleController');
+var configController = require('../controllers/configController');
+
+router.get('/', function(req,res) {
+    res.send('NodeJS - Express API (WILFREDO PAIZ REON)');
+});
 
 router.get('/user/:_id', authController.getUser);
 router.post('/register', authController.register);
 router.post('/login', authController.login);
+router.get('/rating/:_id/:rating',
+    authController.addRating);
+router.get('/rated/:_id/:user_id',
+    authController.addRated);
 
 //Products
 router.get('/product',
@@ -32,6 +41,10 @@ router.get('/product/:_id/:qty',
 router.post('/product',
     passport.authenticate('jwt', { session: false }),
     productController.createProduct);
+
+router.post('/config',
+    configController.addConfig);
+
 router.post('/product/update/:_id',
     passport.authenticate('jwt', { session: false }),
     productController.updateProduct);

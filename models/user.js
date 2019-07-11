@@ -42,6 +42,14 @@ var UserSchema = new Schema({
     type: {
         type: Number,
         required: true
+    },
+    rating: {
+        type: Number,
+        default: 0        
+    },
+    rated: {
+        type: [String],
+        default: []
     }
 
 }, { timestamps: true });

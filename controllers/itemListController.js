@@ -90,6 +90,7 @@ exports.getList = function(req, res) {
                             return product.seller_id;
                         });*/
                         var result = _.chain(products).groupBy("seller_id._id").map(function(v, i) {
+
                             return {
                                 seller: v[0].seller_id,
                                 products: v

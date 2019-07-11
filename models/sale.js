@@ -19,6 +19,10 @@ var SaleSchema = new Schema({
     status: {
         type: 'Number',
         default: 0
+    },
+    number: {
+        type: String,
+        required: true
     }
 
 }, { timestamps: true });
